@@ -61,6 +61,10 @@ export default class Hand extends Component{
                             <PushButton2 onBetButton={this.props.onBet} text='bet 10+'/>
                             <PushButton2 onBetButton={this.props.onReset} text='reset'/>
                         </View>
+                        <View style={{marginBottom: 20}}>
+                            <PushButton2 onBetButton={this.props.onHit} text='Hit'/>
+                            <PushButton2 onBetButton={this.props.onStand} text='Stand'/>
+                        </View>
                     </View>
                 }
             </View>
