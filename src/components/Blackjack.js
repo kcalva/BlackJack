@@ -42,12 +42,61 @@ export default class Blackjack extends Component{
     }
 
     _onAddPlayer = ()=>{
-        OmniAural.onAddPlayer({hand:[]})
+        OmniAural.onAddPlayer({hand:[],score:100,bet:0})
+    }
+
+    handValue = (hand)=>{
+        let handHasAce = false
+        let handValue = 0
+        for(let i = 0; i < hand.length; i++){
+            if(this.cardValue(hand[i]) === 1){
+                handHasAce = true
+            }
+            handValue = handValue + this.cardValue(hand[i])
+        }
+        if(handHasAce){
+            if(handValue <= 11){
+                handValue = handValue + 10
+            }
+        }
+
+        return handValue
+    }
+
+    cardValue = (cardIndex)=>{
+        let cardValue = cardIndex%13
+
+        if(cardValue === 0){
+            return 1
+        }
+
+        else if(cardValue >= 1 && cardValue <= 9){
+            return cardValue + 1
+        }
+
+        else{
+            return 10
+        }
+    }
+    _onBet = (theBet,playerIndex)=>{
+        OmniAural.onBet(theBet,playerIndex)
+    }
+
+    _onReset = (playerIndex)=>{
+        OmniAural.onReset(playerIndex)
     }
 
     render(){
         player = (player,index)=>{
-            return <Hand key={index} hand={player.hand}/>
+            return <Hand 
+            key={index} 
+            hand={player.hand} 
+            score={player.score} 
+            bet={player.bet}
+            handVal={this.handValue(player.hand)}
+            onBet={()=>this._onBet(10,index)}
+            onReset={()=>this._onReset(index)}
+            />
         }
 
         return(
@@ -65,6 +114,7 @@ export default class Blackjack extends Component{
                     </Text>
                     <Hand hand={this.state.dealersHand} 
                         isDealer={true}
+                        handVal={this.handValue(this.state.dealersHand)}
                     />
                 </View>
                 <View>

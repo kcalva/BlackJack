@@ -44,4 +44,41 @@ const playersHand = (playerIndex)=>{
     OmniAural.state.deck.set(OmniAural.state.deck.value())
 }
 
-OmniAural.addActions(onNewRound, onAddPlayer, dealersHand, playersHand)
+const onBet = (theBet,playerIndex)=>{
+    let newPlayers = OmniAural.state.players.value()
+    let score = newPlayers[playerIndex].score
+    let bet = newPlayers[playerIndex].bet
+
+    if(theBet === 0){
+        score += 0
+        bet = 0
+    }
+    
+    if(theBet > score){
+        return
+    }
+
+    bet += theBet
+    score -= theBet
+
+    newPlayers[playerIndex].score = score
+    newPlayers[playerIndex].bet = bet
+
+    if(bet > 100){
+        let refund = bet - 100
+        score += refund
+        bet = 100
+    }
+
+    OmniAural.state.players.set(newPlayers)
+}
+
+const onReset = (playerIndex)=>{
+    let newPlayers = OmniAural.state.players.value()
+    newPlayers[playerIndex].score += newPlayers[playerIndex].bet
+    newPlayers[playerIndex].bet = 0
+
+    OmniAural.state.players.set(newPlayers)
+}
+
+OmniAural.addActions(onNewRound, onAddPlayer, dealersHand, playersHand, onBet, onReset)
